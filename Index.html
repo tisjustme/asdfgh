@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link
+      href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    ></link>
+    <style>
+      .Game {
+        color: white;
+        font-size: 20pt;
+        margin: auto;
+        display: block;
+        width: 270px;
+        text-align: center;
+        height: 20pt;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+      #Player {
+        display: none;
+        width: 5vw;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+      }
+      .characterDiv {
+        display: flex;
+        flex-direction: row;
+      }
+      #background,
+      body {
+        overflow: hidden;
+        height: 100vh;
+        width: 100vw;
+        background-image: url(pixel-art---backgrounds-looney-factory-design-3.png);
+      }
+      body,
+      input,
+      select,
+      option {
+        font-family: "Press Start 2P";
+      }
+      input,
+      option,
+      select {
+        padding: 0.5em;
+        width: 15em;
+        box-sizing: border-box;
+      }
+      label {
+        font-size: 20pt;
+        width: 5em;
+      }
+      span {
+        display: inline-block;
+        width: 5em;
+        color: white;
+      }
+      #charLine {
+        width: 20em;
+        padding: 0.5em;
+        display: inline-block;
+        color: white;
+      }
+    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body id="background">
+    <div id="StartScreen">
+      <label id="charLine">Character Creation</label>
+      <div class="characterDiv">
+        <div class="LeftPanel">
+          <label
+            ><span>Name</span>
+            <input
+              id="characterName"
+              name="characterName"
+              type="text"
+              maxlength="13"
+              minlength="1"
+              onchange="CharacterName(this)"
+            />
+          </label>
+          <div id="dawg"></div>
+          <label
+            ><span>Class</span>
+            <select id="Class" name="Class" onchange="characterClass(this)">
+              <option value="Fighter">Fighter</option>
+              <option value="Ranger">Ranger</option>
+              <option value="Rogue">Rogue</option>
+            </select>
+          </label>
+        </div>
+        <div class="RightPanel">
+          <img
+            src="Fighter.png"
+            alt="CH Logo"
+            height="70"
+            width="70"
+            id="CharacterPic"
+          />
+        </div>
+      </div>
+      <a class="Game" href="javascript:startGame()">Start Game</a>
+    </div>
+    <div id="levelOne"></div>
+    <img id="Player" src="Ranger.png" />
+    <script src="Index.js"></script>
+  </body>
+</html>
