@@ -22,7 +22,7 @@ function CharacterName(inp) {
   console.log(inp.value);
   person1.name = inp.value;
 }
-let selection = document.getElementById("Class").value;
+let selection = document.getElementById("Class");
 //person1[selection] = "name";
 
 const CharacterImageMap = {
@@ -44,7 +44,7 @@ function startGame() {
     "url(pixelland.jpg) center center no-repeat ";
   document.getElementById("background").style.backgroundSize = "cover";
   setInterval(update, 1000 / 60);
-  person1.reference.src = CharacterImageMap[selection];
+  person1.reference.src = CharacterImageMap[selection.value];
 }
 function update() {
   move();
