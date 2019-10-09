@@ -70,7 +70,7 @@ function move() {
     //018person1.jumping = false;
   }
 
-  if (keyDown[87] && person1.velocityY == 0) {
+  if ((keyDown[32] || keyDown[87]) && person1.velocityY == 0) {
     person1.velocityY = -0.008;
   }
   person1.y -= person1.velocityY;
