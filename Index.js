@@ -9,7 +9,8 @@ let person1 = {
   x: 0,
   y: 0,
   reference: document.getElementById("Player"),
-  velocityY: 0
+  velocityY: 0,
+  velocityX: 0
 };
 let keyDown = [];
 onkeydown = function(e) {
@@ -23,13 +24,14 @@ function CharacterName(inp) {
   person1.name = inp.value;
 }
 let selection = document.getElementById("Class");
-//person1[selection] = "name";
-
 const CharacterImageMap = {
   Fighter: "Fighter.png",
   Ranger: "Ranger.png",
   Rogue: "Niiiiiiinja.png"
 };
+const speed = 0.005;
+const power = -0.008;
+
 function NameSelect(name) {
   console.log("hello " + name);
 }
@@ -46,20 +48,37 @@ function startGame() {
   setInterval(update, 1000 / 60);
   person1.reference.src = CharacterImageMap[selection.value];
 }
+function collision(animal) {
+  const rect = animal.reference.getBoundingClientRect();
+  const rightEdge = rect.x + rect.width;
+  const leftEdge = rect.x;
+  if (leftEdge < 0) {
+    //hit left wall
+    animal.velocityX = 2.5 * speed;
+    animal.velocityY = power;
+  } else if (rightEdge > window.innerWidth) {
+    //hit Right wall
+    animal.velocityX = -2.5 * speed;
+    animal.velocityY = power;
+  }
+}
 function update() {
   move();
-  //jump();
 }
 function move() {
   var gravity = 800 * 0.0000005;
-
   person1.velocityY += gravity;
-  let speed = 0.005;
-  if (keyDown[65]) {
+  person1.velocityX += person1.velocityX
+    ? person1.velocityX < 0
+      ? gravity
+      : -gravity
+    : 0;
+
+  if (keyDown[65] && person1.velocityX === 0) {
     person1.x -= speed;
     person1.reference.style.transform = "scaleX(-1)";
   }
-  if (keyDown[68]) {
+  if (keyDown[68] && person1.velocityX === 0) {
     person1.x += speed;
     person1.reference.style.transform = "scaleX(1)";
   }
@@ -67,14 +86,15 @@ function move() {
   if (person1.y <= 0) {
     person1.y = 0;
     person1.velocityY = 0;
-    //018person1.jumping = false;
+    person1.velocityX = 0;
   }
 
   if ((keyDown[32] || keyDown[87]) && person1.velocityY == 0) {
-    person1.velocityY = -0.008;
+    person1.velocityY = power;
   }
+  collision(person1);
   person1.y -= person1.velocityY;
-
+  person1.x += person1.velocityX;
   person1.reference.style.left = person1.x * window.innerWidth + "px";
   person1.reference.style.bottom = person1.y * window.innerWidth + "px";
 }
