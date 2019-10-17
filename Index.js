@@ -74,11 +74,11 @@ function move() {
       : -gravity
     : 0;
 
-  if (keyDown[65] && person1.velocityX === 0) {
+  if (keyDown[65] && person1.velocityX <= 0) {
     person1.x -= speed;
     person1.reference.style.transform = "scaleX(-1)";
   }
-  if (keyDown[68] && person1.velocityX === 0) {
+  if (keyDown[68] && person1.velocityX >= 0) {
     person1.x += speed;
     person1.reference.style.transform = "scaleX(1)";
   }
