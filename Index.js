@@ -12,6 +12,7 @@ let person1 = {
   velocityY: 0,
   velocityX: 0
 };
+
 let keyDown = [];
 onkeydown = function(e) {
   keyDown[e.which] = true;
@@ -62,6 +63,17 @@ function collision(animal) {
     animal.velocityY = power;
   }
 }
+function structureCollision(structure) {
+  if (
+    !(person1.velocityY < 0) &&
+    person1.x < 0.5 &&
+    person1.x > 0.3 &&
+    person1.y >= 0.05 &&
+    person1.y < 0.06
+  ) {
+    person1.velocityY = 0;
+  }
+}
 function update() {
   move();
 }
@@ -89,10 +101,11 @@ function move() {
     person1.velocityX = 0;
   }
 
+  collision(person1);
+  structureCollision(person1);
   if ((keyDown[32] || keyDown[87]) && person1.velocityY == 0) {
     person1.velocityY = power;
   }
-  collision(person1);
   person1.y -= person1.velocityY;
   person1.x += person1.velocityX;
   person1.reference.style.left = person1.x * window.innerWidth + "px";
