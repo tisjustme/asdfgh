@@ -32,52 +32,61 @@ const CharacterImageMap = {
 };
 const speed = 0.005;
 const power = -0.015;
-
-function NameSelect(name) {
-  console.log("hello " + name);
-}
-function characterClass(sel) {
-  console.log(sel.value);
-  document.getElementById("CharacterPic").src = CharacterImageMap[sel.value];
-}
-function startGame() {
-  showLevel();
-  document.getElementById("StartScreen").style.display = "none";
-  document.getElementById("Player").style.display = "block";
-  document.getElementById("background").style.background =
-    "url(pixelland.jpg) center center no-repeat ";
-  document.getElementById("background").style.backgroundSize = "cover";
-  setInterval(update, 1000 / 60);
-  person1.reference.src = CharacterImageMap[selection.value];
-}
-function showLevel(arglevel) {
-  if (typeof arglevel === "number") {
-    level = arglevel;
+if (person1.velocityY <= 0 || person1.velocityX <= 0) {
+  (rightWall = false), (leftWall = false);
+  function NameSelect(name) {
+    console.log("hello " + name);
   }
-  for (levelDiv of document.getElementsByClassName("level")) {
-    levelDiv.style.display = "none";
+  function characterClass(sel) {
+    console.log(sel.value);
+    document.getElementById("CharacterPic").src = CharacterImageMap[sel.value];
   }
-  document.getElementById("level" + level).style.display = "block";
-}
-function collision(animal) {
-  const rect = animal.reference.getBoundingClientRect();
-  const rightEdge = rect.x + rect.width;
-  const leftEdge = rect.x;
-  if (leftEdge < 0) {
-    //hit left wall
-    animal.velocityX = 2.5 * speed;
-    animal.velocityY = power;
-  } else if (rightEdge > window.innerWidth) {
-    //hit Right wall
-    animal.velocityX = -2.5 * speed;
-    animal.velocityY = power;
+  function startGame() {
+    showLevel(1);
+    rightWall = false;
+    leftWall = false;
+    document.getElementById("StartScreen").style.display = "none";
+    document.getElementById("Player").style.display = "block";
+    document.getElementById("background").style.background =
+      "url(pixelland.jpg) center center no-repeat ";
+    document.getElementById("background").style.backgroundSize = "cover";
+    setInterval(update, 1000 / 60);
+    person1.reference.src = CharacterImageMap[selection.value];
+  }
+  function showLevel(arglevel) {
+    if (typeof arglevel === "number") {
+      level = arglevel;
+    }
+    for (levelDiv of document.getElementsByClassName("level")) {
+      levelDiv.style.display = "none";
+    }
+    for (levelDiv of document.getElementsByClassName("level" + level)) {
+      levelDiv.style.display = "block";
+    }
+    document.getElementById("level" + level).style.display = "block";
+  }
+  function collision(animal) {
+    const rect = animal.reference.getBoundingClientRect();
+    const rightEdge = rect.x + rect.width;
+    const leftEdge = rect.x;
+    if (leftEdge < 0) {
+      //hit left wall
+      leftWall = true;
+      animal.velocityX = 2.5 * speed;
+      animal.velocityY = power;
+    } else if (rightEdge > window.innerWidth) {
+      //hit Right wall
+      rightWall = true;
+      animal.velocityX = -2.5 * speed;
+      animal.velocityY = power;
+    }
   }
 }
 function structureCollision(structure) {
   if (person1.velocityY > 0) {
     const structures = document.getElementsByClassName("level" + level);
     const rect = person1.reference.getBoundingClientRect();
-    const collisionHeight = 5.5;
+    const collisionHeight = 7;
     rect.y = rect.y + rect.height - collisionHeight;
     for (structure of structures) {
       const structureRect = structure.getBoundingClientRect();
@@ -89,6 +98,8 @@ function structureCollision(structure) {
           rect.y + collisionHeight < structureRect.y
         )
       ) {
+        rightWall = false;
+        leftWall = false;
         person1.velocityY = 0;
         person1.velocityX = 0;
         person1.reference.style.bottom = window.height - structureRect.y + "px";
@@ -96,15 +107,6 @@ function structureCollision(structure) {
       }
     }
   }
-  // if (
-  //   !(person1.velocityY < 0) &&
-  //   person1.x < 0.5 &&
-  //   person1.x > 0.3 &&
-  //   person1.y >= 0.05 &&
-  //   person1.y < 0.06
-  // ) {
-  //   person1.velocityY = 0;
-  // }
 }
 function update() {
   move();
@@ -117,17 +119,20 @@ function move() {
       ? gravity
       : -gravity
     : 0;
-
-  if (keyDown[65] && person1.velocityX <= 0) {
+  if (keyDown[65] && person1.velocityX <= 0 && leftWall === false) {
+    person1.velocityX = 0;
     person1.x -= speed;
     person1.reference.style.transform = "scaleX(-1)";
   }
-  if (keyDown[68] && person1.velocityX >= 0) {
+  if (keyDown[68] && person1.velocityX >= 0 && rightWall === false) {
+    person1.velocityX = 0;
     person1.x += speed;
     person1.reference.style.transform = "scaleX(1)";
   }
 
   if (person1.y <= 0) {
+    rightWall = false;
+    leftWall = false;
     person1.y = 0;
     person1.velocityY = 0;
     person1.velocityX = 0;
