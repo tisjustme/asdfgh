@@ -12,7 +12,7 @@ let person1 = {
   velocityY: 0,
   velocityX: 0
 };
-
+let level = 1;
 let keyDown = [];
 onkeydown = function(e) {
   keyDown[e.which] = true;
@@ -31,7 +31,7 @@ const CharacterImageMap = {
   Rogue: "Niiiiiiinja.png"
 };
 const speed = 0.005;
-const power = -0.008;
+const power = -0.015;
 
 function NameSelect(name) {
   console.log("hello " + name);
@@ -41,6 +41,7 @@ function characterClass(sel) {
   document.getElementById("CharacterPic").src = CharacterImageMap[sel.value];
 }
 function startGame() {
+  showLevel();
   document.getElementById("StartScreen").style.display = "none";
   document.getElementById("Player").style.display = "block";
   document.getElementById("background").style.background =
@@ -48,6 +49,15 @@ function startGame() {
   document.getElementById("background").style.backgroundSize = "cover";
   setInterval(update, 1000 / 60);
   person1.reference.src = CharacterImageMap[selection.value];
+}
+function showLevel(arglevel) {
+  if (typeof arglevel === "number") {
+    level = arglevel;
+  }
+  for (levelDiv of document.getElementsByClassName("level")) {
+    levelDiv.style.display = "none";
+  }
+  document.getElementById("level" + level).style.display = "block";
 }
 function collision(animal) {
   const rect = animal.reference.getBoundingClientRect();
@@ -64,21 +74,43 @@ function collision(animal) {
   }
 }
 function structureCollision(structure) {
-  if (
-    !(person1.velocityY < 0) &&
-    person1.x < 0.5 &&
-    person1.x > 0.3 &&
-    person1.y >= 0.05 &&
-    person1.y < 0.06
-  ) {
-    person1.velocityY = 0;
+  if (person1.velocityY > 0) {
+    const structures = document.getElementsByClassName("level" + level);
+    const rect = person1.reference.getBoundingClientRect();
+    const collisionHeight = 5.5;
+    rect.y = rect.y + rect.height - collisionHeight;
+    for (structure of structures) {
+      const structureRect = structure.getBoundingClientRect();
+      if (
+        !(
+          rect.x > structureRect.x + structureRect.width ||
+          rect.x + rect.width < structureRect.x ||
+          rect.y > structureRect.y + collisionHeight ||
+          rect.y + collisionHeight < structureRect.y
+        )
+      ) {
+        person1.velocityY = 0;
+        person1.velocityX = 0;
+        person1.reference.style.bottom = window.height - structureRect.y + "px";
+        break;
+      }
+    }
   }
+  // if (
+  //   !(person1.velocityY < 0) &&
+  //   person1.x < 0.5 &&
+  //   person1.x > 0.3 &&
+  //   person1.y >= 0.05 &&
+  //   person1.y < 0.06
+  // ) {
+  //   person1.velocityY = 0;
+  // }
 }
 function update() {
   move();
 }
 function move() {
-  var gravity = 800 * 0.0000005;
+  const gravity = 800 * 0.0000007;
   person1.velocityY += gravity;
   person1.velocityX += person1.velocityX
     ? person1.velocityX < 0
@@ -109,5 +141,7 @@ function move() {
   person1.y -= person1.velocityY;
   person1.x += person1.velocityX;
   person1.reference.style.left = person1.x * window.innerWidth + "px";
-  person1.reference.style.bottom = person1.y * window.innerWidth + "px";
+  if (person1.velocityY !== 0) {
+    person1.reference.style.bottom = person1.y * window.innerHeight + "px";
+  }
 }

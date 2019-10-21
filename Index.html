@@ -4,7 +4,7 @@
     <link
       href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap"
       rel="stylesheet"
-    ></link>
+    />
     <style>
       .Game {
         color: white;
@@ -27,6 +27,26 @@
         bottom: 0;
         left: 0;
       }
+      #level1 {
+        display: none;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .structure {
+        background: rgba(0, 0, 0, 0.65);
+        box-shadow: 5px -5px 3px rgba(0, 0, 0, 0.85);
+      }
+      #structure-1-1 {
+        position: absolute;
+        left: 30vw;
+        right: 50vw;
+        top: 85vh;
+        height: 3vh;
+        border-radius: 3vh;
+      }
       .characterDiv {
         display: flex;
         flex-direction: row;
@@ -40,7 +60,7 @@
       }
       body,
       input,
-   select,
+      select,
       option {
         font-family: "Press Start 2P";
       }
@@ -110,7 +130,9 @@
       </div>
       <a class="Game" href="javascript:startGame()">Start Game</a>
     </div>
-    <div id="levelOne"></div>
+    <div id="level1" class="level">
+      <div id="structure-1-1" class="level1 structure"></div>
+    </div>
     <img id="Player" src="Ranger.png" />
     <script src="Index.js"></script>
   </body>
