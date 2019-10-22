@@ -69,16 +69,24 @@ if (person1.velocityY <= 0 || person1.velocityX <= 0) {
     const rect = animal.reference.getBoundingClientRect();
     const rightEdge = rect.x + rect.width;
     const leftEdge = rect.x;
-    if (leftEdge < 0) {
+    if (leftEdge < 0 && person1.y < 0.75) {
       //hit left wall
       leftWall = true;
       animal.velocityX = 2.5 * speed;
       animal.velocityY = power;
-    } else if (rightEdge > window.innerWidth) {
+    } else if (rightEdge > window.innerWidth && person1.y < 0.75) {
       //hit Right wall
       rightWall = true;
       animal.velocityX = -2.5 * speed;
       animal.velocityY = power;
+    } else if (person1.x < 0 && person1.y > 0.75) {
+      person1.velocityX = 0;
+      person1.speed = 0;
+      person1.x = 0;
+    } else if (person1.x > 0.95 && person1.y > 0.75) {
+      person1.velocityX = 0;
+      person1.speed = 0;
+      person1.x = 0.95;
     }
   }
 }
