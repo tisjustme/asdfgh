@@ -86,7 +86,7 @@ function structureCollision(structure) {
   if (person1.velocityY > 0) {
     const structures = document.getElementsByClassName("level" + level);
     const rect = person1.reference.getBoundingClientRect();
-    const collisionHeight = 7;
+    const collisionHeight = 9;
     rect.y = rect.y + rect.height - collisionHeight;
     for (structure of structures) {
       const structureRect = structure.getBoundingClientRect();
