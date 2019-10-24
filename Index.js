@@ -12,6 +12,13 @@ let person1 = {
   velocityY: 0,
   velocityX: 0
 };
+let monster1 = {
+  reference: document.getElementById("monster1"),
+  velocityY: 0,
+  velocityX: 0,
+  x: 0,
+  y: 0
+};
 let level = 1;
 let keyDown = [];
 onkeydown = function(e) {
@@ -45,6 +52,9 @@ if (person1.velocityY <= 0 || person1.velocityX <= 0) {
     showLevel(1);
     rightWall = false;
     leftWall = false;
+    setTimeout(function() {
+      document.getElementById("monster1").style.display = "block";
+    }, 2000);
     document.getElementById("StartScreen").style.display = "none";
     document.getElementById("Player").style.display = "block";
     document.getElementById("background").style.background =
@@ -87,9 +97,24 @@ if (person1.velocityY <= 0 || person1.velocityX <= 0) {
       person1.velocityX = 0;
       person1.speed = 0;
       person1.x = 0.95;
+    } else if (
+      person1.x < monster1.x + 0.01 &&
+      person1.x > monster1.x &&
+      person1.y === monster1.y
+    ) {
+      person1.velocityX = 2.5 * speed;
+      person1.velocityY = power;
+    } else if (
+      person1.x > monster1.x - 0.01 &&
+      person1.x < monster1.x &&
+      person1.y === monster1.y
+    ) {
+      person1.velocityX = -2.5 * speed;
+      person1.velocityY = power;
     }
   }
 }
+
 function structureCollision(structure) {
   if (person1.velocityY > 0) {
     const structures = document.getElementsByClassName("level" + level);
@@ -118,6 +143,7 @@ function structureCollision(structure) {
 }
 function update() {
   move();
+  monster1Move();
 }
 function move() {
   const gravity = 800 * 0.0000007;
@@ -156,5 +182,87 @@ function move() {
   person1.reference.style.left = person1.x * window.innerWidth + "px";
   if (person1.velocityY !== 0) {
     person1.reference.style.bottom = person1.y * window.innerHeight + "px";
+  }
+}
+function monster1Move() {
+  const gravity = 800 * 0.0000007;
+  monster1.velocityY += gravity;
+  monster1.velocityX += monster1.velocityX
+    ? monster1.velocityX < 0
+      ? gravity
+      : -gravity
+    : 0;
+  if (person1.x < monster1.x && monster1.reference.style.display === "block") {
+    monster1.velocityX = 0;
+    monster1.x -= speed / 3;
+    monster1.reference.style.transform = "scaleX(-1)";
+  }
+  if (person1.x > monster1.x && monster1.reference.style.display === "block") {
+    monster1.velocityX = 0;
+    monster1.x += speed / 3;
+    monster1.reference.style.transform = "scaleX(1)";
+  }
+  monster1.y -= monster1.velocityY;
+  monster1.x += monster1.velocityX;
+  monster1.reference.style.left = monster1.x * window.innerWidth + "px";
+  if (monster1.velocityY !== 0) {
+    monster1.reference.style.bottom = monster1.y * window.innerHeight + "px";
+  }
+  if (monster1.y <= 0) {
+    monster1.y = 0;
+    monster1.velocityY = 0;
+  }
+  collision(monster1);
+  structureCollision(monster1);
+  function collision(monster1) {
+    const rect = monster1.reference.getBoundingClientRect();
+    const rightEdge = rect.x + rect.width;
+    const leftEdge = rect.x;
+    if (leftEdge < 0 && monster1.y < 0.75) {
+      //hit left wall
+      leftWall = true;
+      monster1.velocityX = 2.5 * speed;
+      monster1.velocityY = power;
+    } else if (rightEdge > window.innerWidth && monster1.y < 0.75) {
+      //hit Right wall
+      rightWall = true;
+      monster1.velocityX = -2.5 * speed;
+      monster1.velocityY = power;
+    } else if (monster1.x < 0 && monster1.y > 0.75) {
+      monster1.velocityX = 0;
+      monster1.speed = 0;
+      monster1.x = 0;
+    } else if (monster1.x > 0.95 && monster1.y > 0.75) {
+      monster1.velocityX = 0;
+      monster1.speed = 0;
+      monster1.x = 0.95;
+    }
+  }
+  function structureCollision(structure) {
+    if (monster1.velocityY > 0) {
+      const structures = document.getElementsByClassName("level" + level);
+      const rect = monster1.reference.getBoundingClientRect();
+      const collisionHeight = 9;
+      rect.y = rect.y + rect.height - collisionHeight;
+      for (structure of structures) {
+        const structureRect = structure.getBoundingClientRect();
+        if (
+          !(
+            rect.x > structureRect.x + structureRect.width ||
+            rect.x + rect.width < structureRect.x ||
+            rect.y > structureRect.y + collisionHeight ||
+            rect.y + collisionHeight < structureRect.y
+          )
+        ) {
+          rightWall = false;
+          leftWall = false;
+          monster1.velocityY = 0;
+          monster1.velocityX = 0;
+          monster1.reference.style.bottom =
+            window.height - structureRect.y + "px";
+          break;
+        }
+      }
+    }
   }
 }
