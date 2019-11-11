@@ -1,5 +1,5 @@
 let person1 = {
-  Ch0asdwaracterDamage: 2,
+  CharacterDamage: 2,
   CharacterHealth: 3,
   CharacterSpeed: 1,
   maxjumpheight: 1.01,
