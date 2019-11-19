@@ -1,3 +1,6 @@
+let structure1_1 = {
+  reference: document.getElementById("structure1-1")
+};
 let person1 = {
   CharacterDamage: 2,
   CharacterHealth: 3,
@@ -112,8 +115,8 @@ function collision(animal) {
     person1.y === monster1.y &&
     monster1.go == true
   ) {
-    person1.velocityX = 3.5 * speed;
-    person1.velocityY = power * 1.5;
+    person1.velocityX = 2.5 * speed;
+    person1.velocityY = power;
     person1.CharacterHealth = person1.CharacterHealth - 1;
   } else if (
     person1.x > monster1.x - 0.05 &&
@@ -124,8 +127,8 @@ function collision(animal) {
     person1.velocityX != 3.5 &&
     monster1.go == true
   ) {
-    person1.velocityX = -3.5 * speed;
-    person1.velocityY = power * 1.5;
+    person1.velocityX = -2.5 * speed;
+    person1.velocityY = power;
     person1.CharacterHealth = person1.CharacterHealth - 1;
   }
 }
@@ -203,7 +206,15 @@ function move() {
 //Monster 1
 function monster1Move() {
   const gravity = 800 * 0.0000007;
-  monster1.velocityY += gravity;
+  if (
+    (monster1.velocityY !== 0 &&
+      rect.x > structureRect.x + structureRect.width) ||
+    rect.x + rect.width < structureRect.x ||
+    rect.y > structureRect.y + collisionHeight ||
+    rect.y + collisionHeight < structureRect.y
+  ) {
+    monster1.velocityY += gravity;
+  }
   monster1.velocityX += monster1.velocityX
     ? monster1.velocityX < 0
       ? gravity
@@ -277,8 +288,6 @@ function monster1Move() {
           monster1.velocityX = 0;
           monster1.reference.style.bottom =
             window.height - structureRect.y + "px";
-          console.log("hi");
-
           break;
         }
       }
