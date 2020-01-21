@@ -22,7 +22,7 @@
       }
       #Player {
         display: none;
-        width: 5vw;
+        height: 75px;
         position: absolute;
         bottom: 0;
         left: 0;
@@ -93,9 +93,9 @@
       #background,
       body {
         overflow: hidden;
-        background-image: url(pixel-art---backgrounds-looney-factory-design-3.png);
-        height: 100vh;
-        width: 100vw;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-image: url(bkgdtitl.png);
       }
       body,
       input,
@@ -151,15 +151,14 @@
           <label
             ><span>Class</span>
             <select id="Class" name="Class" onchange="characterClass(this)">
-              <option value="Fighter">Fighter</option>
-              <option value="Ranger">Ranger</option>
-              <option value="Rogue">Rogue</option>
+              <option value="Fighter">Fighter 1</option>
+              <option value="Ranger">Fighter 2</option>
             </select>
           </label>
         </div>
         <div class="RightPanel">
           <img
-            src="Fighter.png"
+            src="Fighter1a.png"
             alt="CH Logo"
             height="70"
             width="70"
@@ -177,7 +176,7 @@
       <div id="structure-1-5" class="level level1 structure"></div>
     </div>
     <img id="monster1" src="download.jpg" />
-    <img id="Player" src="Ranger.png" />
+    <img id="Player" src="trans-char2a.png" />
     <script src="Index.js"></script>
   </body>
 </html>

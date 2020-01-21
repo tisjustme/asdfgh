@@ -49,9 +49,8 @@ function CharacterName(inp) {
 }
 let selection = document.getElementById("Class");
 const CharacterImageMap = {
-  Fighter: "Fighter.png",
-  Ranger: "Ranger.png",
-  Rogue: "Niiiiiiinja.png"
+  Fighter: "Fighter1a.png",
+  Ranger: "trans-char2a.png"
 };
 const speed = 0.005;
 const power = -0.015;
@@ -61,7 +60,6 @@ if (person1.velocityY <= 0 || person1.velocityX <= 0) {
     console.log("hello " + name);
   }
   function characterClass(sel) {
-    console.log(sel.value);
     document.getElementById("CharacterPic").src = CharacterImageMap[sel.value];
   }
   function startGame() {
@@ -75,8 +73,8 @@ if (person1.velocityY <= 0 || person1.velocityX <= 0) {
     }, 2000);
     document.getElementById("StartScreen").style.display = "none";
     document.getElementById("Player").style.display = "block";
-    document.getElementById("background").style.background =
-      "url(pixelland.jpg) center center no-repeat ";
+    document.getElementById("background").style.backgroundImage =
+      "url(pixelland.jpg)";
     document.getElementById("background").style.backgroundSize = "cover";
     setInterval(update, 1000 / 60);
     person1.reference.src = CharacterImageMap[selection.value];
@@ -122,28 +120,32 @@ function collision(animal) {
     person1.speed = 0;
     person1.x = 0.95;
   } else if (
-    person1.x < monster1.x + 0.01 &&
+    person1.x < monster1.x + 0.05 &&
     person1.x > monster1.x &&
-    person1.y === monster1.y &&
-    monster1.go == true
-  ) {
-    //person1.velocityX = 2.5 * speed;
-    //person1.velocityY = power;
-    person1.CharacterHealth = person1.CharacterHealth - 1;
-  } else if (
-    person1.x > monster1.x - 0.05 &&
-    person1.x < monster1.x &&
     person1.y > monster1.y - 0.05 &&
     person1.y < monster1.y &&
     person1.velocityX != -3.5 &&
     person1.velocityX != 3.5 &&
     monster1.go == true
   ) {
-    //person1.velocityX = -2.5 * speed;
-    // person1.velocityY = power;
+    person1.velocityX = 2.5 * speed;
+    person1.velocityY = power;
     person1.CharacterHealth = person1.CharacterHealth - 1;
-    console.log("owwwww");
-  }
+    Hit = true;
+  } else if (
+    person1.x > monster1.x - 0.05 &&
+    person1.x < monster1.x &&
+    person1.y >= monster1.y - 0.05 &&
+    person1.y <= monster1.y &&
+    person1.velocityX != -3.5 &&
+    person1.velocityX != 3.5 &&
+    monster1.go == true
+  ) {
+    person1.velocityX = -2.5 * speed;
+    person1.velocityY = power;
+    person1.CharacterHealth = person1.CharacterHealth - 1;
+    Hit = true;
+  } else Hit = false;
 }
 
 function structureCollision(sprite) {
@@ -184,9 +186,11 @@ function move() {
       ? gravity
       : -gravity
     : 0;
+  const curImage = person1.reference.src;
   if (keyDown[65] && person1.velocityX <= 0 && leftWall === false) {
     person1.velocityX = 0;
     person1.x -= speed;
+
     person1.reference.style.transform = "scaleX(-1)";
   }
   if (keyDown[68] && person1.velocityX >= 0 && rightWall === false) {
@@ -205,7 +209,7 @@ function move() {
 
   collision(person1);
   structureCollision(person1);
-  if ((keyDown[32] || keyDown[87]) && person1.velocityY == 0) {
+  if (keyDown[87] && person1.velocityY == 0) {
     person1.velocityY = power;
   }
   person1.y -= person1.velocityY;
@@ -383,11 +387,12 @@ function monster1collision(monster1) {
 }
 
 //Monster 2
+
 //Monster 3
 //monster 4
 //monster 5
 //Level 2 Monsters
-if (person1.CharacterHealth == 0) {
+if (person1.CharacterHealth <= 0) {
   {
     monster1.go = false;
     document.getElementById("monster1").style.display = "none";
