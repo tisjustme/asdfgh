@@ -13,6 +13,7 @@ let structure1_4 = {
 let structure1_5 = {
   reference: document.getElementById("structure1-5")
 };
+let swinging = false;
 let person1 = {
   CharacterDamage: 2,
   CharacterHealth: 3,
@@ -24,6 +25,7 @@ let person1 = {
   x: 0,
   y: 0,
   reference: document.getElementById("Player"),
+  stepCount: 0,
   velocityY: 0,
   velocityX: 0
 };
@@ -31,6 +33,7 @@ let monster1 = {
   reference: document.getElementById("monster1"),
   velocityY: 0,
   velocityX: 0,
+  stepCount: 0,
   x: 0,
   y: 0,
   go: false
@@ -49,7 +52,7 @@ function CharacterName(inp) {
 }
 let selection = document.getElementById("Class");
 const CharacterImageMap = {
-  Fighter: "Fighter1a.png",
+  Fighter: "trans-char1a.png",
   Ranger: "trans-char2a.png"
 };
 const speed = 0.005;
@@ -120,10 +123,10 @@ function collision(animal) {
     person1.speed = 0;
     person1.x = 0.95;
   } else if (
-    person1.x < monster1.x + 0.05 &&
-    person1.x > monster1.x &&
-    person1.y > monster1.y - 0.05 &&
-    person1.y < monster1.y &&
+    person1.x <= monster1.x + 0.07 &&
+    person1.x >= monster1.x &&
+    person1.y >= monster1.y - 0.05 &&
+    person1.y <= monster1.y &&
     person1.velocityX != -3.5 &&
     person1.velocityX != 3.5 &&
     monster1.go == true
@@ -132,9 +135,14 @@ function collision(animal) {
     person1.velocityY = power;
     person1.CharacterHealth = person1.CharacterHealth - 1;
     Hit = true;
+    if (person1.CharacterHealth <= 0) {
+      location.reload();
+      console.log("hi");
+    }
+    takeStep(monster1);
   } else if (
-    person1.x > monster1.x - 0.05 &&
-    person1.x < monster1.x &&
+    person1.x >= monster1.x - 0.05 &&
+    person1.x <= monster1.x &&
     person1.y >= monster1.y - 0.05 &&
     person1.y <= monster1.y &&
     person1.velocityX != -3.5 &&
@@ -145,9 +153,15 @@ function collision(animal) {
     person1.velocityY = power;
     person1.CharacterHealth = person1.CharacterHealth - 1;
     Hit = true;
-  } else Hit = false;
+    if (person1.CharacterHealth <= 0) {
+      location.reload();
+      console.log("hi");
+    }
+    takeStep(monster1);
+  } else {
+    Hit = false;
+  }
 }
-
 function structureCollision(sprite) {
   if (sprite.velocityY > 0) {
     const structures = document.getElementsByClassName("level" + level);
@@ -174,9 +188,38 @@ function structureCollision(sprite) {
     }
   }
 }
+const imgMap = [
+  "a.png",
+  "a.png",
+  "a.png",
+  "a.png",
+  "a.png",
+  "a.png",
+  "b.png",
+  "b.png",
+  "b.png",
+  "b.png",
+  "b.png",
+  "b.png",
+  "c.png",
+  "c.png",
+  "c.png",
+  "c.png",
+  "c.png",
+  "c.png"
+];
 function update() {
   move();
   monstermove();
+}
+function takeStep(animal) {
+  const curUrl = animal.reference.src;
+  animal.stepCount++;
+  if (animal.stepCount >= imgMap.length) {
+    animal.stepCount = 0;
+  }
+  animal.reference.src =
+    curUrl.substring(0, curUrl.length - 5) + imgMap[animal.stepCount];
 }
 function move() {
   const gravity = 800 * 0.0000007;
@@ -186,17 +229,19 @@ function move() {
       ? gravity
       : -gravity
     : 0;
-  const curImage = person1.reference.src;
   if (keyDown[65] && person1.velocityX <= 0 && leftWall === false) {
     person1.velocityX = 0;
     person1.x -= speed;
-
+    takeStep(person1);
     person1.reference.style.transform = "scaleX(-1)";
+    goingRight = false;
   }
   if (keyDown[68] && person1.velocityX >= 0 && rightWall === false) {
     person1.velocityX = 0;
     person1.x += speed;
+    takeStep(person1);
     person1.reference.style.transform = "scaleX(1)";
+    goingRight = true;
   }
 
   if (person1.y <= 0) {
@@ -236,10 +281,12 @@ function monstermove() {
   }
   if (person1.x > monster1.x && still) {
     monster1.x += speed * 0.6;
+    takeStep(monster1);
     monster1.reference.style.transform = "scaleX(-1)";
   }
   if (person1.x < monster1.x && still) {
     monster1.x -= speed * 0.6;
+    takeStep(monster1);
     monster1.reference.style.transform = "scaleX(1)";
   }
   if (
@@ -249,6 +296,7 @@ function monstermove() {
     monster1.x > 0.5
   ) {
     monster1.x -= speed * 0.6;
+    takeStep(monster1);
   }
   if (
     person1.y > monster1.y + 0.1 &&
@@ -258,6 +306,7 @@ function monstermove() {
     monster1.x > 0.37
   ) {
     monster1.x += speed * 0.6;
+    takeStep(monster1);
   }
   if (monster1.y <= 0) {
     rightWall = false;
@@ -392,15 +441,3 @@ function monster1collision(monster1) {
 //monster 4
 //monster 5
 //Level 2 Monsters
-if (person1.CharacterHealth <= 0) {
-  {
-    monster1.go = false;
-    document.getElementById("monster1").style.display = "none";
-    document.getElementById("Player").style.display = "none";
-    StartScreen.style.display = "block";
-    document.getElementById("background").style.background =
-      "url(pixel-art---backgrounds-looney-factory-design-3.png)";
-    document.getElementById("level1").style.display = "none";
-    window.window.location.reload(true);
-  }
-}
