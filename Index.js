@@ -81,12 +81,12 @@ if (person1.velocityY <= 0 || person1.velocityX <= 0) {
     document.getElementById("background").style.backgroundSize = "cover";
     setInterval(update, 1000 / 60);
     person1.reference.src = CharacterImageMap[selection.value];
-    if (!(person1.name = "Ernesto")) {
-      person1.CharacterHealth = 3;
-    } else {
-      person1.CharacterHealth = 3;
-    }
   }
+}
+if (keyDown[49]) {
+  (document.getElementById("monster1").style.display = "none"),
+    (document.getElementById("background").style.backgroundImage =
+      "url(pixelland.jpg)");
 }
 function showLevel(arglevel) {
   if (typeof arglevel === "number") {
